@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A股交易学习课程入口：Level-2、技术指标、分时图与筹码分布。">
+  <title>A股交易学习库</title>
+  <style>
+    :root{--bg:#f4f1ea;--paper:#fffdf8;--ink:#20211f;--muted:#6b6c66;--line:#ddd8ca;--blue:#245fd6;--bluewash:#edf2ff;--amber:#9a6415;--amberwash:#fbf3e6;--radius:22px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Arial,sans-serif;line-height:1.7}.wrap{width:min(1120px,calc(100% - 32px));margin:auto}
+    header{padding:18px 0;border-bottom:1px solid var(--line);background:rgba(244,241,234,.94);position:sticky;top:0;z-index:2;backdrop-filter:blur(8px)}.nav{display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{font-weight:850;text-decoration:none;color:var(--ink)}nav a{color:var(--muted);text-decoration:none;margin-left:16px;font-size:14px}nav a:hover{color:var(--blue)}
+    main{padding:56px 0 68px}.eyebrow{color:var(--blue);font-weight:800;letter-spacing:.08em;font-size:14px}.hero h1{font-size:clamp(38px,6vw,72px);line-height:1.08;letter-spacing:-.05em;margin:14px 0 18px;max-width:850px}.hero p{font-size:clamp(18px,2.5vw,23px);color:#45463f;max-width:820px;margin:0}.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 16px;border:1px solid #c9c3b5;border-radius:11px;text-decoration:none;color:var(--ink);background:var(--paper);font-weight:750}.button.primary{background:var(--blue);border-color:var(--blue);color:#fff}.button:hover{border-color:var(--blue)}
+    .notice{margin:34px 0 42px;padding:18px 20px;border-left:4px solid var(--amber);background:var(--amberwash);border-radius:0 15px 15px 0;color:#4f4638}.notice strong{display:block;color:var(--ink);margin-bottom:4px}.section-title{font-size:30px;letter-spacing:-.025em;margin:44px 0 16px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{display:flex;flex-direction:column;min-height:230px;padding:22px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 8px 24px rgba(40,35,20,.035)}.tag{font-size:13px;color:var(--blue);font-weight:800}.card h2{font-size:23px;line-height:1.3;margin:10px 0 8px}.card p{color:var(--muted);margin:0 0 18px}.card .button{margin-top:auto;width:max-content}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}.stat{padding:16px 18px;border-top:3px solid #b7c9f0;background:var(--paper);border-radius:12px}.stat b{display:block;color:var(--blue);font-size:28px;line-height:1.2}.stat span{font-size:14px;color:var(--muted)}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.step{padding:18px;background:var(--bluewash);border-radius:14px}.step b{display:block;color:var(--blue);font-size:14px;margin-bottom:6px}.step span{font-weight:750}.footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:13px}
+    @media(max-width:800px){nav a{margin-left:8px}.grid{grid-template-columns:1fr}.stats,.steps{grid-template-columns:repeat(2,1fr)}main{padding-top:36px}}
+    @media(max-width:480px){.wrap{width:calc(100% - 24px)}nav a{display:none}.stats,.steps{grid-template-columns:1fr}.card{min-height:0}}
+  </style>
+</head>
+<body>
+  <header><div class="wrap nav"><a class="brand" href="./">A股交易学习库</a><nav><a href="#courses">课程</a><a href="#path">学习路径</a><a href="#notes">说明</a></nav></div></header>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">A-SHARE OBSERVATION COURSE</div>
+      <h1>把价格、成交、盘口与风险管理放在同一张地图上。</h1>
+      <p>这是现有 A 股课程的统一入口。内容使用虚构数据做学习实验，不连接同花顺账户，也不构成投资建议。</p>
+      <div class="hero-actions"><a class="button primary" href="#courses">开始学习</a><a class="button" href="./level2/index.html">打开第12—23课</a></div>
+      <div class="stats"><div class="stat"><b>12—23</b><span>Level-2 与交易执行</span></div><div class="stat"><b>24—55</b><span>指标、分时与筹码</span></div><div class="stat"><b>32+</b><span>进阶课与交互实验</span></div><div class="stat"><b>自包含</b><span>静态网页，可直接访问</span></div></div>
+    </section>
+
+    <section id="courses">
+      <h2 class="section-title">课程入口</h2>
+      <div class="grid">
+        <article class="card"><div class="tag">第12—23课 · Level-2</div><h2>盘口、逐笔与交易约束</h2><p>从十档、委托队列、逐笔成交、集合竞价，到 T+1、退出规则、日志和样本外验证。</p><a class="button primary" href="./level2/index.html">进入课程</a></article>
+        <article class="card"><div class="tag">第24—55课 · 进阶</div><h2>MACD、分时图与筹码分布</h2><p>覆盖均线、MACD/MACDFS、VWAP、筹码估算，以及常用指标和组合验证。</p><a class="button primary" href="./advanced.html">进入课程</a></article>
+        <article class="card"><div class="tag">速查与复习</div><h2>Level-2 观察速查卡</h2><p>把字段含义、数据边界和同花顺观察要点集中在一页，适合学习后复习。</p><a class="button" href="./level2/level2-reading-card.html">打开速查卡</a></article>
+      </div>
+    </section>
+
+    <section id="path">
+      <h2 class="section-title">建议学习路径</h2>
+      <div class="steps"><div class="step"><b>01</b><span>先理解价格与成交</span></div><div class="step"><b>02</b><span>再看盘口事件</span></div><div class="step"><b>03</b><span>用指标描述，不替代判断</span></div><div class="step"><b>04</b><span>最后做记录与验证</span></div></div>
+    </section>
+
+    <section id="notes" class="notice">
+      <strong>内容完整性说明</strong>
+      当前运行时找到了第12—23课/Level-2压缩包、第24—55课 HTML，以及一个第11课单页文件；没有找到第1—10课原始 HTML、完整的 <code>a-share-level2-course.html</code> 或 <code>a-share-indicator-map.html</code>。因此本入口只链接真实存在的文件，并没有虚构缺失课程。补齐原文件后可直接放入同一站点继续扩展。
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap">A股交易学习库 · 静态课程入口 · 仅供学习研究</div></footer>
+</body>
+</html>

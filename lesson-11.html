@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; img-src data:; font-src data:; media-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A股交易员第11课｜仓位管理：为什么看对方向也会亏得很惨？</title>
+<style>
+:root{
+  --bg:#f3f1eb;--paper:#fff;--ink:#171717;--muted:#6b6963;--line:#ddd9d0;
+  --blue:#245fd6;--red:#d64b45;--green:#1f8a59;--amber:#b87713;--soft:#f8f7f3;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);
+  font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+  line-height:1.62;
+}
+main{width:min(1080px,calc(100% - 28px));margin:0 auto 72px}
+.hero{padding:64px 0 34px}
+.eyebrow{font-size:14px;font-weight:900;letter-spacing:.12em;color:var(--blue)}
+h1{font-size:clamp(38px,7vw,72px);line-height:1.01;margin:12px 0 18px;letter-spacing:-.045em}
+.hero p{font-size:clamp(18px,2.4vw,25px);max-width:850px;margin:0;color:#383734}
+.core{margin-top:28px;border-left:5px solid var(--blue);padding:14px 18px;background:#eaf0ff;border-radius:0 16px 16px 0;font-weight:900;font-size:clamp(18px,2.2vw,24px)}
+.step{margin:30px 0 46px}
+.stephead{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px}
+.num{font-size:54px;line-height:.9;font-weight:950;color:var(--blue);letter-spacing:-.05em;min-width:62px}
+.step h2{font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0}
+.sub{margin:8px 0 0;color:var(--muted);font-size:16px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 8px 28px rgba(0,0,0,.035)}
+svg{display:block;width:100%;height:auto}
+.caption{margin:14px 2px 0;font-size:17px;color:#42413e}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.note{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:14px}
+.note b{display:block;margin-bottom:4px}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;background:#eef2ff;color:#2549a8;font-weight:900;font-size:13px}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}
+summary{cursor:pointer;font-weight:900;color:#333}
+details p{margin:8px 0 0;color:#555}
+.formula{font-size:clamp(22px,3vw,34px);font-weight:950;text-align:center;background:#111;color:#fff;border-radius:18px;padding:18px;margin:16px 0}
+.rule{display:flex;gap:10px;align-items:flex-start;margin:10px 0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--blue);margin-top:8px;flex:none}
+.warn{background:#fff4e3;border:1px solid #edd1a5;border-radius:16px;padding:14px;margin-top:14px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+button{
+  border:1px solid #c9c5bc;background:#fff;border-radius:999px;padding:10px 15px;
+  font:inherit;font-weight:900;cursor:pointer;color:#252525
+}
+button.active{background:#171717;color:#fff;border-color:#171717}
+button:focus-visible,input:focus-visible{outline:3px solid #87a9ff;outline-offset:3px}
+.lab{display:grid;grid-template-columns:1.08fr .92fr;gap:16px}
+.labbox{background:#111;color:#fff;border-radius:20px;padding:18px}
+.labbox .muted{color:#aaa}
+.price{font-size:39px;font-weight:950;letter-spacing:-.04em}
+.kpi{font-size:23px;font-weight:950}
+.sliderrow{display:grid;grid-template-columns:155px 1fr 92px;gap:10px;align-items:center;margin:12px 0}
+input[type=range]{width:100%}
+.resultgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.result{border-radius:14px;padding:13px;background:#202020}
+.result small{color:#aaa;display:block}
+.result strong{font-size:24px}
+.heatrow{display:grid;grid-template-columns:110px 1fr 68px;gap:10px;align-items:center;margin:10px 0}
+.heatbar{height:15px;background:#e8e4dc;border-radius:999px;overflow:hidden}
+.heatfill{height:100%;background:var(--blue);width:25%}
+.quiz{display:grid;gap:10px}
+.quiz button{border-radius:14px;text-align:left;width:100%}
+.feedback{min-height:30px;font-weight:900;margin-top:10px}
+.rec{background:#171717;color:#fff;border-radius:24px;padding:24px;margin-top:38px}
+.rec h2{margin:0 0 12px;font-size:30px}
+.rec ol{margin:0;padding-left:22px}
+.small{font-size:13px;color:var(--muted);margin-top:18px}
+@media(max-width:760px){
+  .hero{padding-top:42px}
+  .grid2,.grid3,.grid4,.lab,.resultgrid{grid-template-columns:1fr}
+  .sliderrow,.heatrow{grid-template-columns:1fr}
+  .panel{padding:15px;border-radius:18px}
+  .step{margin-bottom:36px}
+  .num{font-size:44px;min-width:48px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main>
+
+<section class="hero">
+  <div class="eyebrow">A股交易员 · 第 11 课</div>
+  <h1>仓位管理：<br>为什么看对方向，也可能亏得很惨？</h1>
+  <p>方向只回答“可能往哪走”；仓位决定这次判断对你的账户有多大影响。<b>交易结果 = 判断质量 × 仓位大小 × 执行方式。</b></p>
+  <div class="core">仓位不是表达信心的音量，而是控制错误代价的旋钮。</div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">01</div><div><h2>同样看错一次，账户结果完全不同</h2><p class="sub">标的下跌 8%，仓位决定账户损失。</p></div></div>
+  <div class="panel">
+    <svg viewBox="0 0 920 430" role="img" aria-label="同一只股票下跌百分之八时，二成仓账户损失百分之一点六，满仓账户损失百分之八">
+      <rect width="920" height="430" rx="18" fill="#ffffff"/>
+      <rect x="75" y="80" width="330" height="260" rx="22" fill="#eef2ff" stroke="#cad8f6" stroke-width="2"/>
+      <rect x="515" y="80" width="330" height="260" rx="22" fill="#fff0ef" stroke="#efcfcd" stroke-width="2"/>
+      <text x="120" y="125" fill="#245fd6" font-size="25" font-weight="900">账户 A：20% 仓位</text>
+      <text x="560" y="125" fill="#d64b45" font-size="25" font-weight="900">账户 B：100% 仓位</text>
+      <rect x="120" y="165" width="220" height="38" rx="10" fill="#d9e4ff"/>
+      <rect x="120" y="165" width="44" height="38" rx="10" fill="#245fd6"/>
+      <rect x="560" y="165" width="220" height="38" rx="10" fill="#d64b45"/>
+      <text x="120" y="235" fill="#171717" font-size="20">股票：-8%</text>
+      <text x="120" y="287" fill="#1f8a59" font-size="38" font-weight="950">账户约 -1.6%</text>
+      <text x="560" y="235" fill="#171717" font-size="20">股票：-8%</text>
+      <text x="560" y="287" fill="#d64b45" font-size="38" font-weight="950">账户约 -8%</text>
+      <text x="235" y="385" text-anchor="middle" fill="#555" font-size="19">判断一样，伤害不一样</text>
+      <text x="680" y="385" text-anchor="middle" fill="#555" font-size="19">仓位把错误放大了</text>
+    </svg>
+    <p class="caption">理想化计算：账户影响约等于 <b>仓位比例 × 标的涨跌幅</b>。现实还会受到费用、跳空和成交偏差影响。</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">02</div><div><h2>“仓位大”不等于“风险一定大”</h2><p class="sub">还要看买入价离失效位有多远。</p></div></div>
+  <div class="panel">
+    <div class="formula">账户计划风险 ≈ 仓位比例 × 止损距离%</div>
+    <div class="grid2">
+      <div>
+        <svg viewBox="0 0 440 335" role="img" aria-label="百分之四十仓位配合百分之二止损距离，账户计划风险约百分之零点八">
+          <rect width="440" height="335" rx="16" fill="#faf9f6"/>
+          <text x="45" y="55" fill="#245fd6" font-size="23" font-weight="900">仓位 40%</text>
+          <rect x="45" y="82" width="350" height="35" rx="10" fill="#dce6ff"/>
+          <rect x="45" y="82" width="140" height="35" rx="10" fill="#245fd6"/>
+          <text x="45" y="165" fill="#d64b45" font-size="23" font-weight="900">止损距离 2%</text>
+          <line x1="65" y1="205" x2="375" y2="205" stroke="#d64b45" stroke-width="8"/>
+          <circle cx="220" cy="205" r="12" fill="#d64b45"/>
+          <text x="82" y="275" fill="#1f8a59" font-size="32" font-weight="950">账户风险约 0.8%</text>
+        </svg>
+        <p class="caption"><span class="badge">仓位看似较大</span> 但结构止损很近。</p>
+      </div>
+      <div>
+        <svg viewBox="0 0 440 335" role="img" aria-label="百分之十五仓位配合百分之十止损距离，账户计划风险约百分之一点五">
+          <rect width="440" height="335" rx="16" fill="#faf9f6"/>
+          <text x="45" y="55" fill="#245fd6" font-size="23" font-weight="900">仓位 15%</text>
+          <rect x="45" y="82" width="350" height="35" rx="10" fill="#dce6ff"/>
+          <rect x="45" y="82" width="53" height="35" rx="10" fill="#245fd6"/>
+          <text x="45" y="165" fill="#d64b45" font-size="23" font-weight="900">止损距离 10%</text>
+          <line x1="65" y1="205" x2="375" y2="205" stroke="#d64b45" stroke-width="8"/>
+          <circle cx="220" cy="205" r="12" fill="#d64b45"/>
+          <text x="82" y="275" fill="#d64b45" font-size="32" font-weight="950">账户风险约 1.5%</text>
+        </svg>
+        <p class="caption"><span class="badge">仓位看似较小</span> 但失效位太远。</p>
+      </div>
+    </div>
+    <p class="caption">所以不要只说“我买了几成仓”。更完整的问题是：<b>如果按计划认错，这笔会让账户亏多少？</b></p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">03</div><div><h2>连续亏损，才是仓位管理的压力测试</h2><p class="sub">任何方法都可能遇到连续错误。</p></div></div>
+  <div class="panel">
+    <svg viewBox="0 0 920 450" role="img" aria-label="连续六次亏损时，每次风险百分之一、二、五和十的账户剩余比例对比">
+      <rect width="920" height="450" rx="18" fill="#fff"/>
+      <line x1="80" y1="360" x2="860" y2="360" stroke="#d7d3cb" stroke-width="2"/>
+      <g>
+        <rect x="115" y="103" width="120" height="257" rx="12" fill="#245fd6"/>
+        <rect x="305" y="118" width="120" height="242" rx="12" fill="#5080e5"/>
+        <rect x="495" y="159" width="120" height="201" rx="12" fill="#b87713"/>
+        <rect x="685" y="215" width="120" height="145" rx="12" fill="#d64b45"/>
+      </g>
+      <g font-size="22" font-weight="950" text-anchor="middle">
+        <text x="175" y="82" fill="#245fd6">剩 94.1%</text>
+        <text x="365" y="97" fill="#245fd6">剩 88.6%</text>
+        <text x="555" y="138" fill="#b87713">剩 73.5%</text>
+        <text x="745" y="194" fill="#d64b45">剩 53.1%</text>
+      </g>
+      <g font-size="18" font-weight="900" text-anchor="middle" fill="#333">
+        <text x="175" y="395">每次风险 1%</text>
+        <text x="365" y="395">每次风险 2%</text>
+        <text x="555" y="395">每次风险 5%</text>
+        <text x="745" y="395">每次风险 10%</text>
+      </g>
+      <text x="460" y="430" text-anchor="middle" fill="#666" font-size="17">假设连续 6 次，每次都亏当前账户的固定比例</text>
+    </svg>
+    <div class="grid4">
+      <div class="note"><b>1%风险</b>六连亏约回撤 5.9%</div>
+      <div class="note"><b>2%风险</b>六连亏约回撤 11.4%</div>
+      <div class="note"><b>5%风险</b>六连亏约回撤 26.5%</div>
+      <div class="note"><b>10%风险</b>六连亏约回撤 46.9%</div>
+    </div>
+    <p class="caption">仓位管理的目标不是让你永不亏损，而是让一次普通连败<b>不会摧毁继续交易的能力</b>。</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">04</div><div><h2>四只股票，不一定等于分散</h2><p class="sub">如果它们都受同一种因素驱动，风险可能一起出现。</p></div></div>
+  <div class="panel">
+    <div class="grid2">
+      <div>
+        <svg viewBox="0 0 440 350" role="img" aria-label="四只同板块股票位于同一朵风险云下，表现为伪分散">
+          <rect width="440" height="350" rx="16" fill="#faf9f6"/>
+          <path d="M118 92 C128 45 194 42 218 78 C250 44 320 61 317 110 C355 115 362 169 326 186 L121 186 C77 171 80 111 118 92Z" fill="#fff0ef" stroke="#d64b45" stroke-width="3"/>
+          <text x="220" y="127" text-anchor="middle" fill="#d64b45" font-size="22" font-weight="900">同一板块冲击</text>
+          <g fill="#245fd6">
+            <rect x="60" y="235" width="70" height="65" rx="12"/>
+            <rect x="150" y="235" width="70" height="65" rx="12"/>
+            <rect x="240" y="235" width="70" height="65" rx="12"/>
+            <rect x="330" y="235" width="50" height="65" rx="12"/>
+          </g>
+          <g fill="#fff" font-size="18" font-weight="900" text-anchor="middle">
+            <text x="95" y="275">A</text><text x="185" y="275">B</text><text x="275" y="275">C</text><text x="355" y="275">D</text>
+          </g>
+          <g stroke="#d64b45" stroke-width="4">
+            <line x1="150" y1="188" x2="95" y2="230"/><line x1="195" y1="188" x2="185" y2="230"/>
+            <line x1="250" y1="188" x2="275" y2="230"/><line x1="295" y1="188" x2="355" y2="230"/>
+          </g>
+        </svg>
+        <p class="caption"><span class="badge">伪分散</span> 四只都属于同一热门方向。</p>
+      </div>
+      <div>
+        <svg viewBox="0 0 440 350" role="img" aria-label="不同驱动因素的四类资产分布在不同风险来源下，集中度相对更低">
+          <rect width="440" height="350" rx="16" fill="#faf9f6"/>
+          <g>
+            <circle cx="100" cy="95" r="52" fill="#eaf0ff"/><circle cx="335" cy="95" r="52" fill="#eef8f2"/>
+            <circle cx="100" cy="255" r="52" fill="#fff4e3"/><circle cx="335" cy="255" r="52" fill="#f1eefb"/>
+          </g>
+          <g font-size="18" font-weight="900" text-anchor="middle">
+            <text x="100" y="102" fill="#245fd6">驱动 A</text><text x="335" y="102" fill="#1f8a59">驱动 B</text>
+            <text x="100" y="262" fill="#b87713">驱动 C</text><text x="335" y="262" fill="#6e52aa">驱动 D</text>
+          </g>
+          <path d="M185 175 L255 175" stroke="#aaa" stroke-width="3" stroke-dasharray="8 8"/>
+          <text x="220" y="157" text-anchor="middle" fill="#666" font-size="17">相关性较低</text>
+        </svg>
+        <p class="caption"><span class="badge">更真实的分散</span> 风险来源不完全相同。</p>
+      </div>
+    </div>
+    <div class="formula">组合热度 = 所有持仓“计划账户风险”的总和</div>
+    <p class="caption">即使每只票单独看仓位不大，若同时重仓同一板块，坏消息来时可能一起触发损失。</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">05</div><div><h2>加仓：是在放大优势，还是放大错误？</h2><p class="sub">“跌了更便宜”不是独立的加仓理由。</p></div></div>
+  <div class="panel">
+    <div class="grid2">
+      <div>
+        <svg viewBox="0 0 440 350" role="img" aria-label="价格确认上涨后分批增加仓位，同时重新计算总风险">
+          <rect width="440" height="350" rx="16" fill="#faf9f6"/>
+          <polyline points="45,270 105,225 165,245 225,185 285,205 345,140 400,160" fill="none" stroke="#245fd6" stroke-width="7" stroke-linecap="round"/>
+          <g fill="#1f8a59">
+            <circle cx="105" cy="225" r="9"/><circle cx="225" cy="185" r="11"/><circle cx="345" cy="140" r="13"/>
+          </g>
+          <text x="55" y="310" fill="#1f8a59" font-size="18" font-weight="900">小仓试错 → 结构确认 → 再评估</text>
+        </svg>
+        <p class="caption"><span class="badge">顺势加仓</span> 新信息让原假设更强，且总风险仍受控。</p>
+      </div>
+      <div>
+        <svg viewBox="0 0 440 350" role="img" aria-label="价格不断下跌时持续加仓，导致总风险越来越大">
+          <rect width="440" height="350" rx="16" fill="#faf9f6"/>
+          <polyline points="45,105 105,145 165,125 225,195 285,175 345,245 400,280" fill="none" stroke="#171717" stroke-width="7" stroke-linecap="round"/>
+          <g fill="#d64b45">
+            <circle cx="105" cy="145" r="9"/><circle cx="225" cy="195" r="12"/><circle cx="345" cy="245" r="15"/>
+          </g>
+          <text x="55" y="320" fill="#d64b45" font-size="18" font-weight="900">越跌越买 → 失效位后移 → 风险膨胀</text>
+        </svg>
+        <p class="caption"><span class="badge">摊低成本</span> 成本变低，不代表交易逻辑变好。</p>
+      </div>
+    </div>
+    <div class="warn"><b>加仓前重新回答：</b>加仓后如果所有持仓一起到失效位，账户总共会亏多少？原逻辑是变强了，还是只是我不愿承认错误？</div>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">06</div><div><h2>现金也有作用：保留下一次选择权</h2><p class="sub">仓位低不等于没有观点，也可能是在等待更清晰的优势。</p></div></div>
+  <div class="panel">
+    <svg viewBox="0 0 920 400" role="img" aria-label="市场机会从模糊到清晰时，风险仓位逐步增加，现金比例逐步降低">
+      <rect width="920" height="400" rx="18" fill="#fff"/>
+      <g>
+        <rect x="80" y="85" width="210" height="230" rx="18" fill="#f8f7f3" stroke="#ddd9d0"/>
+        <rect x="80" y="245" width="210" height="70" rx="0" fill="#245fd6"/>
+        <text x="185" y="125" text-anchor="middle" fill="#171717" font-size="22" font-weight="900">机会模糊</text>
+        <text x="185" y="205" text-anchor="middle" fill="#666" font-size="18">现金较多</text>
+        <text x="185" y="287" text-anchor="middle" fill="#fff" font-size="20" font-weight="900">风险仓位较低</text>
+        <rect x="355" y="85" width="210" height="230" rx="18" fill="#f8f7f3" stroke="#ddd9d0"/>
+        <rect x="355" y="190" width="210" height="125" fill="#245fd6"/>
+        <text x="460" y="125" text-anchor="middle" fill="#171717" font-size="22" font-weight="900">出现优势</text>
+        <text x="460" y="165" text-anchor="middle" fill="#666" font-size="18">开始试错</text>
+        <text x="460" y="260" text-anchor="middle" fill="#fff" font-size="20" font-weight="900">中等仓位</text>
+        <rect x="630" y="85" width="210" height="230" rx="18" fill="#f8f7f3" stroke="#ddd9d0"/>
+        <rect x="630" y="130" width="210" height="185" fill="#245fd6"/>
+        <text x="735" y="115" text-anchor="middle" fill="#171717" font-size="22" font-weight="900">结构确认</text>
+        <text x="735" y="225" text-anchor="middle" fill="#fff" font-size="20" font-weight="900">仓位更高</text>
+      </g>
+      <path d="M300 200 L340 200" stroke="#171717" stroke-width="5"/><polygon points="330,188 350,200 330,212" fill="#171717"/>
+      <path d="M575 200 L615 200" stroke="#171717" stroke-width="5"/><polygon points="605,188 625,200 605,212" fill="#171717"/>
+      <text x="460" y="365" text-anchor="middle" fill="#555" font-size="20" font-weight="900">证据增强，才提高风险暴露</text>
+    </svg>
+    <p class="caption">这不是固定的“标准仓位表”。真正原则是：<b>没有清晰优势时，不必为了满仓而满仓。</b></p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">07</div><div><h2>同花顺实战：买入前检查账户，而不只检查股票</h2><p class="sub">好股票，也可能因为组合位置不合适而不该继续加。</p></div></div>
+  <div class="panel">
+    <div class="grid2">
+      <div>
+        <div class="rule"><div class="dot"></div><div><b>① 单票计划风险</b><br>到失效位，账户会亏多少？</div></div>
+        <div class="rule"><div class="dot"></div><div><b>② 当前总仓位</b><br>账户已经暴露了多少资金？</div></div>
+        <div class="rule"><div class="dot"></div><div><b>③ 组合热度</b><br>所有止损一起发生，会亏多少？</div></div>
+      </div>
+      <div>
+        <div class="rule"><div class="dot"></div><div><b>④ 板块重合</b><br>是不是看似多票，实际押同一方向？</div></div>
+        <div class="rule"><div class="dot"></div><div><b>⑤ 加仓后风险</b><br>不是只看平均成本有没有下降。</div></div>
+        <div class="rule"><div class="dot"></div><div><b>⑥ 仍有选择权吗？</b><br>新机会出现时，账户是否还有空间？</div></div>
+      </div>
+    </div>
+    <p class="caption">同花顺自选股可以帮你观察个股，但仓位与组合风险仍需要自己建立交易日志。</p>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">LAB</div><div><h2>互动实验一：由账户风险倒推仓位</h2><p class="sub">先定“最多亏多少”，再算理论仓位。</p></div></div>
+  <div class="panel">
+    <div class="sliderrow"><strong>账户资金</strong><input id="capital" type="range" min="1000" max="100000" step="1000" value="10000" aria-label="账户资金"><span id="capitalv">10,000</span></div>
+    <div class="sliderrow"><strong>单笔风险</strong><input id="riskpct" type="range" min="0.2" max="5" step="0.1" value="1" aria-label="单笔风险比例"><span id="riskpctv">1.0%</span></div>
+    <div class="sliderrow"><strong>买入价</strong><input id="entry" type="range" min="5" max="50" step="0.1" value="12" aria-label="计划买入价"><span id="entryv">12.0</span></div>
+    <div class="sliderrow"><strong>失效价</strong><input id="stop" type="range" min="3" max="49" step="0.1" value="11.4" aria-label="计划失效价"><span id="stopv">11.4</span></div>
+    <div class="sliderrow"><strong>单票上限</strong><input id="caplimit" type="range" min="5" max="100" step="5" value="30" aria-label="单票资金占用上限"><span id="caplimitv">30%</span></div>
+    <div class="lab">
+      <div>
+        <svg viewBox="0 0 650 420" role="img" aria-label="仓位计算流程：账户资金乘单笔风险得到允许亏损，再除以每股风险得到理论股数，并受单票上限限制">
+          <rect width="650" height="420" rx="18" fill="#faf9f6"/>
+          <rect x="55" y="45" width="540" height="65" rx="16" fill="#eaf0ff"/>
+          <text x="325" y="86" text-anchor="middle" fill="#245fd6" font-size="23" font-weight="900">账户 × 风险% = 允许亏损</text>
+          <path d="M325 118 L325 160" stroke="#171717" stroke-width="5"/><polygon points="312,150 325,170 338,150" fill="#171717"/>
+          <rect x="55" y="175" width="540" height="65" rx="16" fill="#fff4e3"/>
+          <text x="325" y="216" text-anchor="middle" fill="#b87713" font-size="23" font-weight="900">买入价 − 失效价 = 每股风险</text>
+          <path d="M325 248 L325 290" stroke="#171717" stroke-width="5"/><polygon points="312,280 325,300 338,280" fill="#171717"/>
+          <rect x="55" y="305" width="540" height="65" rx="16" fill="#eef8f2"/>
+          <text x="325" y="346" text-anchor="middle" fill="#1f8a59" font-size="23" font-weight="900">风险仓位与单票上限，取更小值</text>
+          <text x="325" y="402" text-anchor="middle" fill="#666" font-size="17">理论示意，不含费用、滑点和实际交易单位</text>
+        </svg>
+      </div>
+      <div class="labbox">
+        <div class="resultgrid">
+          <div class="result"><small>允许亏损</small><strong id="maxloss">100</strong></div>
+          <div class="result"><small>每股风险</small><strong id="pershare">0.60</strong></div>
+          <div class="result"><small>风险推算股数</small><strong id="riskshares">166</strong></div>
+          <div class="result"><small>上限允许股数</small><strong id="capshares">250</strong></div>
+          <div class="result"><small>最终理论股数</small><strong id="shares">166</strong></div>
+          <div class="result"><small>资金占用</small><strong id="usage">19.9%</strong></div>
+        </div>
+        <p id="verdict">风险预算比资金上限更严格，所以按风险预算计算。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">LAB</div><div><h2>互动实验二：组合热度与集中度</h2><p class="sub">四笔交易若同时失效，账户计划损失是多少？</p></div></div>
+  <div class="panel">
+    <div class="heatrow"><strong>持仓 A 风险</strong><input class="heats" id="h1" type="range" min="0" max="5" step="0.1" value="0.6" aria-label="持仓A计划风险"><span id="h1v">0.6%</span></div>
+    <div class="heatrow"><strong>持仓 B 风险</strong><input class="heats" id="h2" type="range" min="0" max="5" step="0.1" value="0.5" aria-label="持仓B计划风险"><span id="h2v">0.5%</span></div>
+    <div class="heatrow"><strong>持仓 C 风险</strong><input class="heats" id="h3" type="range" min="0" max="5" step="0.1" value="0.4" aria-label="持仓C计划风险"><span id="h3v">0.4%</span></div>
+    <div class="heatrow"><strong>持仓 D 风险</strong><input class="heats" id="h4" type="range" min="0" max="5" step="0.1" value="0.3" aria-label="持仓D计划风险"><span id="h4v">0.3%</span></div>
+    <div class="toolbar" aria-label="板块集中度选择">
+      <button class="active" data-corr="same">四只同板块</button>
+      <button data-corr="mixed">四只不同驱动</button>
+    </div>
+    <div class="lab">
+      <div>
+        <svg viewBox="0 0 650 390" role="img" aria-label="四个持仓风险柱和一条组合热度总计">
+          <rect width="650" height="390" rx="18" fill="#faf9f6"/>
+          <g id="bars" fill="#245fd6">
+            <rect id="b1" x="80" y="220" width="85" height="100" rx="10"/>
+            <rect id="b2" x="205" y="237" width="85" height="83" rx="10"/>
+            <rect id="b3" x="330" y="253" width="85" height="67" rx="10"/>
+            <rect id="b4" x="455" y="270" width="85" height="50" rx="10"/>
+          </g>
+          <line x1="55" y1="320" x2="585" y2="320" stroke="#d7d3cb" stroke-width="2"/>
+          <g fill="#333" font-size="18" font-weight="900" text-anchor="middle">
+            <text x="122" y="350">A</text><text x="247" y="350">B</text><text x="372" y="350">C</text><text x="497" y="350">D</text>
+          </g>
+          <text id="cloud" x="325" y="75" text-anchor="middle" fill="#d64b45" font-size="26" font-weight="950">同一风险因子可能同时冲击</text>
+          <path id="arc" d="M120 105 C230 30 420 30 530 105" fill="none" stroke="#d64b45" stroke-width="4" stroke-dasharray="10 8"/>
+        </svg>
+      </div>
+      <div class="labbox">
+        <div class="muted">组合计划热度</div>
+        <div id="heattotal" class="price">1.8%</div>
+        <div class="muted">集中度判断</div>
+        <div id="corrstate" class="kpi">较高：四只同板块</div>
+        <p id="heattext">名义热度只是相加；同板块持仓还可能同时跳空、同时失效。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="step">
+  <div class="stephead"><div class="num">✓</div><div><h2>7题小测</h2><p class="sub">确认你已经从“买几成”升级到“账户风险”。</p></div></div>
+  <div class="panel quiz">
+    <p><b>1. 股票下跌8%，二成仓对账户的理想化影响约为？</b></p>
+    <button data-q="1" data-ok="1">A. -1.6%</button><button data-q="1" data-ok="0">B. -8%</button>
+    <p><b>2. 判断单笔风险，只看仓位比例够不够？</b></p>
+    <button data-q="2" data-ok="0">A. 够</button><button data-q="2" data-ok="1">B. 不够，还要看失效位距离</button>
+    <p><b>3. 为什么要假设会出现连续亏损？</b></p>
+    <button data-q="3" data-ok="1">A. 检查仓位能否让账户活过正常连败</button><button data-q="3" data-ok="0">B. 因为交易一定连续亏</button>
+    <p><b>4. 四只同板块股票各25%，算充分分散吗？</b></p>
+    <button data-q="4" data-ok="0">A. 算</button><button data-q="4" data-ok="1">B. 不一定，可能受同一因素同时冲击</button>
+    <p><b>5. 价格下跌后成本变低，是否足以证明应该加仓？</b></p>
+    <button data-q="5" data-ok="0">A. 是</button><button data-q="5" data-ok="1">B. 否，必须重新检查逻辑和总风险</button>
+    <p><b>6. 组合热度更接近什么？</b></p>
+    <button data-q="6" data-ok="1">A. 所有持仓计划账户风险之和</button><button data-q="6" data-ok="0">B. 所有股票价格之和</button>
+    <p><b>7. 没有清晰机会时，必须保持满仓吗？</b></p>
+    <button data-q="7" data-ok="0">A. 必须</button><button data-q="7" data-ok="1">B. 不必，现金可以保留选择权</button>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+  </div>
+</section>
+
+<section class="rec">
+  <h2>这一课只带走 6 句话</h2>
+  <ol>
+    <li>仓位决定一次判断对账户的影响有多大。</li>
+    <li>单笔风险要同时看<b>仓位比例与止损距离</b>。</li>
+    <li>仓位必须能承受策略正常出现的连续亏损。</li>
+    <li>多只同板块股票，可能只是“伪分散”。</li>
+    <li>加仓后必须重新计算整个账户的总风险。</li>
+    <li>没有清晰优势时，现金能保留下一次选择权。</li>
+  </ol>
+</section>
+
+<p class="small">教育用途：本页用于理解仓位与组合风险，不构成任何个股建议。所有计算均为简化模型，不含费用、滑点、跳空、流动性及具体交易单位限制。</p>
+
+</main>
+<script>
+function fmt(n,d=0){return Number(n).toLocaleString("zh-CN",{minimumFractionDigits:d,maximumFractionDigits:d});}
+function calcPosition(){
+  const capital=+document.getElementById("capital").value;
+  const riskpct=+document.getElementById("riskpct").value;
+  const entry=+document.getElementById("entry").value;
+  const stop=+document.getElementById("stop").value;
+  const caplimit=+document.getElementById("caplimit").value;
+  document.getElementById("capitalv").textContent=fmt(capital);
+  document.getElementById("riskpctv").textContent=riskpct.toFixed(1)+"%";
+  document.getElementById("entryv").textContent=entry.toFixed(1);
+  document.getElementById("stopv").textContent=stop.toFixed(1);
+  document.getElementById("caplimitv").textContent=caplimit.toFixed(0)+"%";
+  const maxloss=capital*riskpct/100;
+  const per=entry-stop;
+  let riskshares=0,capshares=0,shares=0,usage=0;
+  if(per>0){
+    riskshares=Math.floor(maxloss/per);
+    capshares=Math.floor((capital*caplimit/100)/entry);
+    shares=Math.min(riskshares,capshares);
+    usage=shares*entry/capital*100;
+  }
+  document.getElementById("maxloss").textContent=fmt(maxloss,2);
+  document.getElementById("pershare").textContent=per>0?per.toFixed(2):"无效";
+  document.getElementById("riskshares").textContent=per>0?fmt(riskshares):"无效";
+  document.getElementById("capshares").textContent=per>0?fmt(capshares):"无效";
+  document.getElementById("shares").textContent=per>0?fmt(shares):"无效";
+  document.getElementById("usage").textContent=per>0?usage.toFixed(1)+"%":"无效";
+  let msg="";
+  if(per<=0) msg="失效价必须低于买入价。";
+  else if(riskshares<capshares) msg="风险预算比资金上限更严格，所以按风险预算计算。";
+  else if(capshares<riskshares) msg="单票资金上限更严格，所以仓位被上限压低。";
+  else msg="两项限制刚好接近。";
+  document.getElementById("verdict").textContent=msg;
+}
+["capital","riskpct","entry","stop","caplimit"].forEach(id=>document.getElementById(id).addEventListener("input",calcPosition));
+calcPosition();
+
+let corr="same";
+function calcHeat(){
+  const vals=[1,2,3,4].map(i=>+document.getElementById("h"+i).value);
+  vals.forEach((v,idx)=>{
+    document.getElementById("h"+(idx+1)+"v").textContent=v.toFixed(1)+"%";
+    const h=Math.max(8,Math.min(220,v/5*220));
+    const bar=document.getElementById("b"+(idx+1));
+    bar.setAttribute("y",320-h);bar.setAttribute("height",h);
+  });
+  const total=vals.reduce((a,b)=>a+b,0);
+  document.getElementById("heattotal").textContent=total.toFixed(1)+"%";
+  if(corr==="same"){
+    document.getElementById("corrstate").textContent="较高：四只同板块";
+    document.getElementById("heattext").textContent="名义热度只是相加；同板块持仓还可能同时跳空、同时失效。";
+    document.getElementById("cloud").textContent="同一风险因子可能同时冲击";
+    document.getElementById("cloud").setAttribute("fill","#d64b45");
+    document.getElementById("arc").setAttribute("stroke","#d64b45");
+  }else{
+    document.getElementById("corrstate").textContent="相对较低：驱动因素不同";
+    document.getElementById("heattext").textContent="分散不能消灭风险，但可减少单一因素同时冲击全部持仓的概率。";
+    document.getElementById("cloud").textContent="风险来源较分散";
+    document.getElementById("cloud").setAttribute("fill","#1f8a59");
+    document.getElementById("arc").setAttribute("stroke","#1f8a59");
+  }
+}
+document.querySelectorAll(".heats").forEach(x=>x.addEventListener("input",calcHeat));
+document.querySelectorAll("[data-corr]").forEach(btn=>btn.addEventListener("click",()=>{
+  document.querySelectorAll("[data-corr]").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");corr=btn.dataset.corr;calcHeat();
+}));
+calcHeat();
+
+let score=0,answered={};
+document.querySelectorAll("[data-q]").forEach(btn=>btn.addEventListener("click",()=>{
+  const q=btn.dataset.q;if(answered[q])return;answered[q]=true;
+  const ok=btn.dataset.ok==="1";
+  if(ok){score++;btn.style.borderColor="#1f8a59";btn.style.background="#eef9f3";}
+  else{btn.style.borderColor="#d64b45";btn.style.background="#fff1f0";}
+  const n=Object.keys(answered).length;
+  document.getElementById("feedback").textContent=`已答 ${n}/7 · 当前 ${score} 分`+(n===7?(score>=6?" —— 很好，你已经开始用账户视角看交易。":" —— 建议再看一次‘单笔风险、组合热度与伪分散’。"
+  ):"");
+}));
+</script>
+</body>
+</html>
